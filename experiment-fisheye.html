@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Embedded Website</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+      body {
+        background-color: white; /* Set background color to red */
+        margin: 0; /* Remove default margin */
+        overflow: hidden; /* Hide overflow */
+      }
+
+      #submitButton {
+        z-index: 100000;
+        bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <h1>Embedded Website</h1> -->
+
+    <!-- <button onclick="requestCameraAccess()">Request Camera Access</button> -->
+
+    <!-- Div to hold the p5.js sketch -->
+    <div id="sketchContainer"></div>
+
+    <!-- <button id="submitButton">Submit</button> -->
+
+    <script>
+      var gl;
+      let video;
+      let canvas;
+      let test;
+
+      // shaders
+      var frag = `
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec2 iResolution;
+uniform vec2 iMouse;
+uniform bool running;
+uniform float iTime;
+uniform sampler2D iImg;
+uniform float c[22];
+float mousefactor;
+
+float noise( in vec2 x )
+{
+    return abs(sin(1.5*x.x)*sin(1.5*x.y));
+}
+float map(float value, float min1, float max1, float min2, float max2) {
+  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+}
+void main() {
+        vec2 mouse=iMouse/iResolution;
+vec2 p = gl_FragCoord.xy/iResolution;
+vec2 q=vec2(p.x,1.0-p.y);
+vec3 color=texture2D(iImg,vec2(q.x,q.y)).rgb;
+float l=length(q-mouse);
+l=pow(l,.5);
+q-=mouse;
+float a=2.0*atan(q.y,q.x);
+vec2 r=l*vec2(q.x*cos(a)+q.y*sin(a),q.x*sin(a)-q.y*cos(a));
+r+=mouse;
+color=.8*texture2D(iImg,r).rgb+.4*(1.0-l)*vec3(texture2D(iImg,r).r,0.,0.);
+gl_FragColor = vec4(color,1.);
+}
+
+`;
+      var vert = `
+//standard vertex shader
+#ifdef GL_ES
+      precision highp float;
+    #endif
+        #extension GL_OES_standard_derivatives : enable
+    // attributes, in
+    attribute vec3 aPosition;
+    attribute vec3 aNormal;
+    attribute vec2 aTexCoord;
+    attribute vec4 aVertexColor;
+
+    // attributes, out
+    varying vec3 var_vertPos;
+    varying vec4 var_vertCol;
+    varying vec3 var_vertNormal;
+    varying vec2 var_vertTexCoord;
+    
+    // matrices
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    uniform mat3 uNormalMatrix;
+
+    void main() {
+      gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+
+      // just passing things through
+      var_vertPos      = aPosition;
+      var_vertCol      = aVertexColor;
+      var_vertNormal   = aNormal;
+      var_vertTexCoord = aTexCoord;
+    }
+`;
+
+      // setup
+      function setup() {
+        pixelDensity(1);
+        canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+        gl = canvas.elt.getContext("webgl");
+        gl.disable(gl.DEPTH_TEST);
+
+        video = createCapture(VIDEO); // Create a video capture object
+        video.size(width, height); // Set video size to canvas size
+        video.hide(); // Hide the video element
+
+        test = createShader(vert, frag); // Create shader
+      }
+
+      function draw() {
+        background(0);
+        test.setUniform("iResolution", [width, height]);
+        test.setUniform("iMouse", [mouseX, mouseY]);
+        test.setUniform("iImg", video); // Use video as texture
+
+        shader(test);
+        rect(-width / 2, -height / 2, width, height);
+      }
+
+      function requestCameraAccess() {
+        // Request access to the camera
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function (stream) {
+            // Camera access granted, update video element
+            video = createCapture(VIDEO);
+            video.size(windowWidth, windowHeight); // Set the size of the video feed to match window
+            video.hide(); // Hide the video element
+          })
+          .catch(function (error) {
+            // Camera access denied or error occurred
+            console.error("Error accessing camera:", error);
+          });
+      }
+
+      // Resize canvas when window is resized
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+    <script type="module" src="upload-firebase.js" async defer></script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Embedded Website</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+      body {
+        margin: 0; /* Remove default margin */
+        overflow: hidden; /* Hide overflow */
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <h1>Embedded Website</h1> -->
+
+    <!-- <button onclick="requestCameraAccess()">Request Camera Access</button> -->
+
+    <!-- Div to hold the p5.js sketch -->
+    <div id="sketchContainer"></div>
+    <button id="submitButton">Submit</button>
+
+    <script>
+      // Daniel Shiffman
+      // https://thecodingtrain.com
+      // https://youtu.be/WCJM9WIoudI
+      // https://youtu.be/YqVbuMPIRwY
+      // test with alex
+      let video;
+
+      let x = 0;
+
+      function setup() {
+        createCanvas(800, 240);
+        pixelDensity(1);
+        video = createCapture(VIDEO);
+        video.size(320, 240);
+        background(51);
+      }
+
+      function draw() {
+        video.loadPixels();
+        let w = video.width;
+        let h = video.height;
+        copy(video, w / 2, 0, 1, h, x, 0, 1, h);
+        x = x + 1;
+        if (x > width) {
+          x = 0;
+        }
+      }
+    </script>
+    <script type="module" src="upload-firebase.js" async defer></script>
+  </body>
+</html>

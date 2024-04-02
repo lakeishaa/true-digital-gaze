@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300&family=Space+Grotesk:wght@400;700&display=swap");
+
+@media screen and (max-width: 768px) {
+  body {
+    overflow: hidden;
+    font-size: 9px;
+  }
+}
+
+/* * {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="32" height="32"><circle cx="8" cy="8" r="7" fill="green"/></svg>')
+      8 8,
+    auto;
+} */
+
+body {
+  background-color: white;
+  font-family: "Manrope", sans-serif;
+}
+
+#homePageWrapper {
+  margin-top: 15%;
+  /* border: 2px solid black; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* padding: 20px; */
+  background-color: white;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #01ea00;
+}
+
+ul {
+  /* margin-top: 0; */
+  max-width: 30%;
+  padding-left: 0;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+}
+
+ul li {
+  /* width: 150px; */
+  /* align-items: left;
+  text-align: left;
+  justify-content: left; */
+  /* text-align:c */
+}
+
+h1 {
+  /* margin-bottom: 0;     */
+  /* margin between h1 and list elements */
+  text-align: center;
+  font-size: 5em;
+  color: black;
+  text-decoration: line-through;
+  text-decoration-color: #00f000;
+}
+
+h2 {
+  /* text-align: center; */
+  font-size: 2em;
+  line-height: 25px;
+  color: black;
+  margin-top: 0;
+}
+
+h3 {
+  text-align: left;
+  /* margin: 5%; */
+  font-size: 1.5em;
+  color: black;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+
+li {
+    list-style-type: none;
+    font-size: 100px;
+    padding: 30px;
+
+  }
